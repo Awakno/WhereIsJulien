@@ -188,11 +188,11 @@ export default function Home() {
         <div className="mb-4 sm:mb-6 w-full max-w-4xl flex flex-col md:flex-row gap-2 sm:gap-4 justify-center items-center">
           <div className="card-apple px-4 py-2 text-base sm:text-lg font-semibold text-center flex-1">
             Remplacements en attente :{" "}
-            <span className="badge-apple">{stats.actives}</span>
+            <span className="bg-[#e5e5ea] badge-apple">{stats.actives}</span>
           </div>
           <div className="card-apple px-4 py-2 text-base sm:text-lg font-semibold text-center flex-1">
             Remboursés (table mise par ton frère) :{" "}
-            <span className="badge-apple">{stats.remboursee}</span>
+            <span className="bg-[#e5e5ea] badge-apple">{stats.remboursee}</span>
           </div>
         </div>
       )}

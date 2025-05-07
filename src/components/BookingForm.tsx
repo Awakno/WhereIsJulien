@@ -44,7 +44,6 @@ const BookingForm: React.FC<BookingFormProps> = ({
           value={date}
           onChange={(e) => onDateChange(e.target.value)}
           required
-          
           className="input-apple w-full"
         />
       </div>

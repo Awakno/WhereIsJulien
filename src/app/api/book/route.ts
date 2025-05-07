@@ -131,7 +131,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
-        bookings,
+        bookings: [...allBookings],
         stats: {
           ...allStats,
           reasonStats,
