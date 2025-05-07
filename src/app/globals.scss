@@ -34,7 +34,7 @@ body {
   box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.12);
   border: 1px solid #23232b;
   padding: 2rem 1.5rem;
-  margin-bottom: 2rem;
+  margin-block-end: 2rem;
 }
 
 // Apple-style button
@@ -70,7 +70,7 @@ body {
 
 // Apple-style table
 .table-apple {
-  width: 100%;
+  inline-size: 100%;
   border-collapse: separate;
   border-spacing: 0;
   background: #23232b;
@@ -81,7 +81,7 @@ body {
 .table-apple th,
 .table-apple td {
   padding: 0.75rem 1rem;
-  text-align: left;
+  text-align: start;
 }
 .table-apple th {
   background: #23232b;
@@ -89,13 +89,12 @@ body {
   color: #fff;
 }
 .table-apple tr:not(:last-child) td {
-  border-bottom: 1px solid #35353f;
+  border-block-end: 1px solid #35353f;
 }
 
 // Apple-style badge
 .badge-apple {
   display: inline-block;
-  background: #e5e5ea;
   color: #18181c;
   border-radius: 8px;
   padding: 0.25em 0.75em;
