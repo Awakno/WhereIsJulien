@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const bookingsResult = await collection.findOne({ date, meal });
     if (bookingsResult) {
       await collection.updateOne(
-        { date },
+        { date, meal }, // Use both date and meal as filter
         { $set: { reason, meal, remboursee } }
       );
       return NextResponse.json(
@@ -150,20 +150,20 @@ export async function GET(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const body = await req.json();
-    const { date } = bookingSchema.parse(body); // Validate input
+    const { date, meal } = bookingSchema.parse(body); // Validate input (now requires meal)
 
     const db = await dbConnect();
     const collection = db.collection("bookings");
 
-    const bookingsResult = await collection.findOne({ date });
+    const bookingsResult = await collection.findOne({ date, meal });
     if (!bookingsResult) {
       return NextResponse.json(
-        { message: "No booking found for the given date" },
+        { message: "No booking found for the given date and meal" },
         { status: 404 }
       );
     }
 
-    await collection.deleteOne({ date });
+    await collection.deleteOne({ date, meal });
     return NextResponse.json(
       { message: "Booking deleted successfully" },
       { status: 200 }

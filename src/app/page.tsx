@@ -10,6 +10,7 @@ interface Booking {
   date: string;
   meal: "lunch" | "dinner";
   reason: string;
+  remboursee?: boolean;
 }
 
 const Translation = {
@@ -108,8 +109,7 @@ export default function Home() {
         body: JSON.stringify({
           date: bookingDate,
           meal: bookingMeal,
-          reason: reason,
-        }), // Include reason field to match schema
+        }), // Only send date and meal
       });
       if (!response.ok) {
         const errorData = await response.json();
