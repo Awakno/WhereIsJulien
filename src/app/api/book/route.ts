@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { z } from "zod";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../../../lib/authOptions";
 
 // Define a schema for input validation
 const bookingSchema = z.object({
