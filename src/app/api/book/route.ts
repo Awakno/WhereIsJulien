@@ -1,6 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { z } from "zod";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 // Define a schema for input validation
 const bookingSchema = z.object({
@@ -12,7 +14,23 @@ const bookingSchema = z.object({
   remboursee: z.boolean().optional(), // Ajout du champ remboursé
 });
 
+function isAllowedEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  const allowed =
+    process.env.ALLOWED_EMAILS?.split(",").map((e) => e.trim().toLowerCase()) ||
+    [];
+  return allowed.includes(email.toLowerCase());
+}
+
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session || !isAllowedEmail(session.user?.email)) {
+    return NextResponse.json(
+      { message: "Authentication required or not allowed." },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = await req.json();
     const { date, reason, meal, remboursee } = bookingSchema.parse(body); // Validate input
@@ -53,6 +71,14 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session || !isAllowedEmail(session.user?.email)) {
+    return NextResponse.json(
+      { message: "Authentication required or not allowed." },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = await req.json();
     const { date, meal } = bookingSchema.parse(body);
@@ -148,6 +174,14 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session || !isAllowedEmail(session.user?.email)) {
+    return NextResponse.json(
+      { message: "Authentication required or not allowed." },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = await req.json();
     const { date, meal } = bookingSchema.parse(body); // Validate input (now requires meal)

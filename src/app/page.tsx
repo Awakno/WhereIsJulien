@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import BookingForm from "../components/BookingForm";
 import BookingList from "../components/BookingList";
 import ErrorAlert from "../components/ErrorAlert";
@@ -19,6 +20,7 @@ const Translation = {
 };
 
 export default function Home() {
+  const { data: session, status } = useSession();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [date, setDate] = useState("");
   const [meal, setMeal] = useState<"lunch" | "dinner">("lunch");
@@ -176,13 +178,27 @@ export default function Home() {
           Quand il t'aura remboursé (en mettant la table à ta place), marque-le
           comme remboursé !
         </p>
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-6 gap-2">
           <a href="/stats" className="btn-apple text-sm sm:text-base">
             Statistiques de remplacement
           </a>
+          {session ? (
+            <button
+              onClick={() => signOut()}
+              className="btn-apple text-sm sm:text-base"
+            >
+              Se déconnecter ({session.user?.email})
+            </button>
+          ) : (
+            <button
+              onClick={() => signIn("github")}
+              className="btn-apple text-sm sm:text-base"
+            >
+              Se connecter avec GitHub
+            </button>
+          )}
         </div>
       </header>
-
       <ErrorAlert error={error} />
       {stats && (
         <div className="mb-4 sm:mb-6 w-full max-w-4xl flex flex-col md:flex-row gap-2 sm:gap-4 justify-center items-center">
@@ -197,29 +213,31 @@ export default function Home() {
         </div>
       )}
       <main className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-        <BookingForm
-          date={date}
-          meal={meal}
-          reason={reason}
-          isLoading={isLoading}
-          editingBooking={editingBooking}
-          onDateChange={setDate}
-          onMealChange={setMeal}
-          onReasonChange={setReason}
-          onSubmit={handleSubmit}
-          onCancelEdit={() => {
-            setEditingBooking(null);
-            setDate("");
-            setMeal("lunch");
-            setReason("");
-          }}
-        />
+        {session && (
+          <BookingForm
+            date={date}
+            meal={meal}
+            reason={reason}
+            isLoading={isLoading}
+            editingBooking={editingBooking}
+            onDateChange={setDate}
+            onMealChange={setMeal}
+            onReasonChange={setReason}
+            onSubmit={handleSubmit}
+            onCancelEdit={() => {
+              setEditingBooking(null);
+              setDate("");
+              setMeal("lunch");
+              setReason("");
+            }}
+          />
+        )}
         <BookingList
           bookings={bookings}
           isLoading={isLoading}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-          onRefund={handleRefund}
+          onDelete={session ? handleDelete : () => {}}
+          onEdit={session ? handleEdit : () => {}}
+          onRefund={session ? handleRefund : () => {}}
           error={error}
         />
       </main>
