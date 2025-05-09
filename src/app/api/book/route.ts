@@ -83,7 +83,7 @@ export async function PATCH(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const db = await dbConnect();
-    
+
     const collection = db.collection("bookings");
     const allBookings = await collection.find({}).toArray();
     const bookings = allBookings.filter((b: any) => b.remboursee !== true);
