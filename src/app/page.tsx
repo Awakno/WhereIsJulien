@@ -14,11 +14,6 @@ interface Booking {
   remboursee?: boolean;
 }
 
-const Translation = {
-  lunch: "Déjeuner",
-  dinner: "Dîner",
-};
-
 export default function Home() {
   const { data: session, status } = useSession();
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -34,6 +29,16 @@ export default function Home() {
   } | null>(null);
 
   const API_URL = "/api/book";
+  bookings.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA.getTime() - dateB.getTime();
+  });
+  // sort by isRemboursee
+  bookings.sort((a, b) => {
+    if (a.remboursee === b.remboursee) return 0;
+    return a.remboursee ? 1 : -1;
+  });
 
   // Fetch bookings
   const fetchBookings = async () => {
@@ -182,12 +187,12 @@ export default function Home() {
           <a href="/stats" className="btn-apple text-sm sm:text-base">
             Statistiques de remplacement
           </a>
-          {session ? (
+          {session || process.env.NEXT_PUBLIC_DEVELOPMENT ? (
             <button
               onClick={() => signOut()}
               className="btn-apple text-sm sm:text-base"
             >
-              Se déconnecter ({session.user?.email})
+              Se déconnecter ({session?.user?.email || "DEVMODE (ADMIN)"})
             </button>
           ) : (
             <button
@@ -213,7 +218,7 @@ export default function Home() {
         </div>
       )}
       <main className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-        {session && (
+        {(!!session || process.env.NEXT_PUBLIC_DEVELOPMENT) && (
           <BookingForm
             date={date}
             meal={meal}
@@ -235,9 +240,9 @@ export default function Home() {
         <BookingList
           bookings={bookings}
           isLoading={isLoading}
-          onDelete={session ? handleDelete : () => {}}
-          onEdit={session ? handleEdit : () => {}}
-          onRefund={session ? handleRefund : () => {}}
+          onDelete={session || process.env.NEXT_PUBLIC_DEVELOPMENT ? handleDelete : () => {}}
+          onEdit={session || process.env.NEXT_PUBLIC_DEVELOPMENT ? handleEdit : () => {}}
+          onRefund={session || process.env.NEXT_PUBLIC_DEVELOPMENT ? handleRefund : () => {}}
           error={error}
         />
       </main>

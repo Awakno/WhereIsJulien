@@ -15,6 +15,9 @@ const bookingSchema = z.object({
 });
 
 function isAllowedEmail(email: string | null | undefined): boolean {
+  if (process.env.NEXT_PUBLIC_DEVELOPMENT) {
+    return true; // Allow all emails in development mode
+  }
   if (!email) return false;
   const allowed =
     process.env.ALLOWED_EMAILS?.split(",").map((e) => e.trim().toLowerCase()) ||
@@ -24,7 +27,8 @@ function isAllowedEmail(email: string | null | undefined): boolean {
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || !isAllowedEmail(session.user?.email)) {
+  
+  if (!process.env.NEXT_PUBLIC_DEVELOPMENT && (!session || !isAllowedEmail(session.user?.email))) {
     return NextResponse.json(
       { message: "Authentication required or not allowed." },
       { status: 401 }
@@ -72,7 +76,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || !isAllowedEmail(session.user?.email)) {
+  if (!process.env.NEXT_PUBLIC_DEVELOPMENT && (!session || !isAllowedEmail(session.user?.email))) {
     return NextResponse.json(
       { message: "Authentication required or not allowed." },
       { status: 401 }
@@ -175,7 +179,7 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || !isAllowedEmail(session.user?.email)) {
+  if (!process.env.NEXT_PUBLIC_DEVELOPMENT && (!session || !isAllowedEmail(session.user?.email))) {
     return NextResponse.json(
       { message: "Authentication required or not allowed." },
       { status: 401 }
