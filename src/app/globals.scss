@@ -124,3 +124,20 @@ body {
 button {
   cursor: pointer;
 }
+
+*::-webkit-scrollbar {
+  inline-size: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #23232b;
+  
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #444452;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #5a5a6e;
+}
