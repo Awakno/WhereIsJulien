@@ -1,3 +1,6 @@
+# Contexte
+> J'ai dev ce truc vite fait une après midi car ... je suis un chômeur mais intelligent 😉 bref voilà. Le but ? Me faire rembourser les taches que je dois faire à la place de mon frère... (Et oui j'ai vraiment dev un truc pour ça #DevSansTravail #ZeroAvenir)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
