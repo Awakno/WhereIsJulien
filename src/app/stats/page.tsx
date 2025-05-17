@@ -90,7 +90,7 @@ export default function StatsPage() {
         </h1>
         <a
           href="/"
-          className="inline-block mt-4 px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow-md hover:from-purple-700 hover:to-pink-700 transition-all"
+          className="btn-apple inline-block mt-4 px-6 py-2 rounded-lg  text-white font-semibold shadow-md"
         >
           Retour à l'accueil
         </a>

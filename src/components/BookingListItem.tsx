@@ -62,6 +62,7 @@ const BookingListItem: React.FC<BookingListItemProps> = ({
         <>
           <button
             onClick={() => onRefund(booking.date, booking.meal)}
+            onTouchStart={() => onRefund(booking.date, booking.meal)}
             disabled={isLoading}
             className="text-xs bg-gray-800 text-white rounded px-4 py-2 hover:bg-gray-700 transition-colors duration-200"
             style={{ minWidth: 110 }}
@@ -73,6 +74,7 @@ const BookingListItem: React.FC<BookingListItemProps> = ({
       )}
       <button
         onClick={() => onEdit(booking)}
+        onTouchStart={() => onEdit(booking)}
         disabled={isLoading}
         className="text-xs bg-gray-800 text-white rounded px-4 py-2 hover:bg-gray-700 transition-colors duration-200"
         style={{ minWidth: 110 }}
@@ -81,6 +83,7 @@ const BookingListItem: React.FC<BookingListItemProps> = ({
       </button>
       <button
         onClick={() => onDelete(booking.date, booking.meal, booking.reason)}
+        onTouchStart={() => onDelete(booking.date, booking.meal, booking.reason)}
         disabled={isLoading}
         className="text-xs bg-gray-800 text-red rounded px-4 py-2 hover:bg-gray-700 transition-colors duration-200"
       >
