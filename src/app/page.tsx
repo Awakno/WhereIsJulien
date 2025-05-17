@@ -178,7 +178,7 @@ export default function Home() {
           Qui doit mettre la table ?
         </h1>
         <p className="mt-2 text-base sm:text-xl" style={{ color: "#fff" }}>
-          Note ici chaque fois que tu remplaces ton frère pour un repas.
+          Note ici chaque fois que tu remplaces ton frère pour mettre la table.
           <br />
           Quand il t'aura remboursé (en mettant la table à ta place), marque-le
           comme remboursé !
