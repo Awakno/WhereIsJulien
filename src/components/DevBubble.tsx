@@ -84,8 +84,6 @@ function DevBubble() {
     y: number;
     w: number;
     h: number;
-    offsetX: number;
-    offsetY: number;
   }>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const logsEndRef = useRef<HTMLDivElement>(null);
@@ -97,6 +95,7 @@ function DevBubble() {
     const origLog = console.log;
     const origError = console.error;
     const origInfo = console.info;
+    const origWarn = console.warn;
     function pushLog(type: string, ...args: any[]) {
       setLogs((prev) => [
         ...prev,
@@ -117,10 +116,15 @@ function DevBubble() {
       pushLog("info", ...args);
       origInfo(...args);
     };
+    console.warn = (...args) => {
+      pushLog("warn", ...args);
+      origWarn(...args);
+    };
     return () => {
       console.log = origLog;
       console.error = origError;
       console.info = origInfo;
+      console.warn = origWarn;
     };
   }, []);
 
@@ -155,33 +159,33 @@ function DevBubble() {
   // Custom resize logic
   function onResizeMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    if (!popupRef.current) return;
-    const rect = popupRef.current.getBoundingClientRect();
     setResizing({
       x: e.clientX,
       y: e.clientY,
       w: size.width,
       h: size.height,
-      offsetX: e.clientX - rect.left,
-      offsetY: e.clientY - rect.top,
     });
     document.body.style.userSelect = "none";
   }
+
   function onResizeMouseMove(e: MouseEvent) {
     if (!resizing) return;
-    // Calculate new size based on where the mouse is now vs where it started
-    const deltaX = e.clientX - resizing.x;
-    const deltaY = e.clientY - resizing.y;
+
+    const deltaX = resizing.x - e.clientX; // inversion
+    const deltaY = resizing.y - e.clientY; // inversion
+
     const newWidth = Math.max(
       260,
-      Math.min(window.innerWidth * 0.95, resizing.w + deltaX)
+      Math.min(window.innerWidth * 0.95, resizing.w - deltaX) // inversion ici
     );
     const newHeight = Math.max(
       180,
-      Math.min(window.innerHeight * 0.8, resizing.h + deltaY)
+      Math.min(window.innerHeight * 0.8, resizing.h - deltaY) // inversion ici
     );
+
     setSize({ width: newWidth, height: newHeight });
   }
+
   function onResizeMouseUp() {
     setResizing(null);
     document.body.style.userSelect = "";
@@ -198,11 +202,17 @@ function DevBubble() {
 
   // --- Persistence helpers ---
   useEffect(() => {
-    // Restore state from localStorage
+    // Restore state from localStorage and merge logs
     try {
       const saved = localStorage.getItem("devbubble-state");
       if (saved) {
-        const { open, pos, size, logs, lastPath } = JSON.parse(saved);
+        const {
+          open,
+          pos,
+          size,
+          logs: savedLogs,
+          lastPath,
+        } = JSON.parse(saved);
         if (typeof open === "boolean") setOpen(open);
         if (pos && typeof pos.x === "number" && typeof pos.y === "number")
           setPos(pos);
@@ -212,7 +222,16 @@ function DevBubble() {
           typeof size.height === "number"
         )
           setSize(size);
-        if (Array.isArray(logs)) setLogs(logs);
+        if (Array.isArray(savedLogs)) {
+          setLogs((prev) => {
+            // Merge logs from localStorage and current state, avoiding duplicates
+            const merged = [...prev];
+            for (const log of savedLogs) {
+              if (!merged.includes(log)) merged.push(log);
+            }
+            return merged;
+          });
+        }
       }
     } catch {}
   }, []);
@@ -225,6 +244,8 @@ function DevBubble() {
       );
     } catch {}
   }, [open, pos, size, logs, pathname]);
+
+  
 
   if (!isDev) return null;
   return (
@@ -241,10 +262,12 @@ function DevBubble() {
           ref={popupRef}
           style={{
             ...styles.popup,
-            transform: `translate(${pos.x}px, ${pos.y}px)`,
+            top: pos.y,
+            left: pos.x,
             width: size.width,
             height: size.height,
-            resize: undefined, // Remove native resize
+            transform: "none", // désactive le translate
+            resize: undefined,
           }}
         >
           <div style={styles.header} onMouseDown={onMouseDown}>

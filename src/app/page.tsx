@@ -5,7 +5,6 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import BookingForm from "../components/BookingForm";
 import BookingList from "../components/BookingList";
 import ErrorAlert from "../components/ErrorAlert";
-
 interface Booking {
   _id?: string; // Assuming MongoDB adds an _id
   date: string;
@@ -138,6 +137,7 @@ export default function Home() {
   ) => {
     setIsLoading(true);
     setError(null);
+    
     try {
       const response = await fetch(API_URL, {
         method: "PATCH",
