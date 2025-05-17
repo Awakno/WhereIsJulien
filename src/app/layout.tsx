@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SessionProvider } from "next-auth/react";
 import SessionProviderWrapper from "../components/SessionProviderWrapper";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.scss";
+import DevBubble from "../components/DevBubble";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +32,7 @@ export default function RootLayout({
       >
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
         <Analytics />
+        <DevBubble />
       </body>
     </html>
   );
