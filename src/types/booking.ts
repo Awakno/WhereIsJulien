@@ -7,16 +7,16 @@ export interface Booking {
 }
 
 export interface BookingsProps {
-    bookings: Booking[];
-    isLoading: boolean;
-    error: string | null;
-    onDelete: (date: string, meal: "lunch" | "dinner", reason: string) => void;
-    onEdit: (booking: Booking) => void;
-    onRefund: (date: string, meal: "lunch" | "dinner") => void;
-    stats?: {
-        actives: number;
-        remboursee: number;
-    };
+  bookings: Booking[];
+  isLoading: boolean;
+  error: string | null;
+  onDelete: (date: string, meal: "lunch" | "dinner", reason: string) => void;
+  onEdit: (booking: Booking) => void;
+  onRefund: (date: string, meal: "lunch" | "dinner") => void;
+  stats?: {
+    actives: number;
+    remboursee: number;
+  };
 }
 
 export interface BookingFormProps {
@@ -38,6 +38,7 @@ export interface BookingListItemProps {
   onEdit: (booking: Booking) => void;
   onRefund: (date: string, meal: "lunch" | "dinner") => void;
   isLoading: boolean;
+  NoSession: boolean;
 }
 
 export interface BookingListProps {

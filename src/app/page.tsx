@@ -171,41 +171,44 @@ export default function Home() {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center p-2 sm:p-4 md:p-8 font-sans"
-      style={{ background: "#111216" }}
-    >
-      <header className="mb-8 sm:mb-10 text-center">
+    <div className="min-h-screen flex flex-col items-center p-2 sm:p-4 md:p-8 font-sans bg-[#111216]">
+      <header className="mb-8 sm:mb-10 text-center w-full max-w-2xl px-2 sm:px-0">
         <h1
-          className="text-3xl sm:text-5xl font-bold"
+          className="text-2xl xs:text-3xl sm:text-5xl font-bold break-words leading-tight"
           style={{ color: "#fff", letterSpacing: "0.01em" }}
         >
           Qui doit mettre la table ?
         </h1>
-        <p className="mt-2 text-base sm:text-xl" style={{ color: "#fff" }}>
+        <p className="mt-2 text-sm xs:text-base sm:text-xl text-white break-words leading-snug">
           Note ici chaque fois que tu remplaces ton frère pour mettre la table.
           <br />
           Quand il t'aura remboursé (en mettant la table à ta place), marque-le
           comme remboursé !
         </p>
-        <div className="flex justify-center mt-6 gap-2">
-          <a href="/stats" className="btn-apple text-sm sm:text-base">
+        <div className="flex flex-wrap justify-center mt-6 gap-2 w-full">
+          <a
+            href="/stats"
+            className="btn-apple text-xs xs:text-sm sm:text-base"
+          >
             Statistiques de remplacement
           </a>
-          <a href="/history" className="btn-apple text-sm sm:text-base">
+          <a
+            href="/history"
+            className="btn-apple text-xs xs:text-sm sm:text-base"
+          >
             Historique des remplacements
           </a>
           {session || process.env.NEXT_PUBLIC_DEVELOPMENT ? (
             <button
               onClick={() => signOut()}
-              className="btn-apple text-sm sm:text-base"
+              className="btn-apple text-xs xs:text-sm sm:text-base"
             >
               Se déconnecter ({session?.user?.email || "DEVMODE (ADMIN)"})
             </button>
           ) : (
             <button
               onClick={() => signIn("github")}
-              className="btn-apple text-sm sm:text-base"
+              className="btn-apple text-xs xs:text-sm sm:text-base"
             >
               Se connecter avec GitHub
             </button>
@@ -215,11 +218,11 @@ export default function Home() {
       <ErrorAlert error={error} />
       {stats && (
         <div className="mb-4 sm:mb-6 w-full max-w-4xl flex flex-col md:flex-row gap-2 sm:gap-4 justify-center items-center">
-          <div className="card-apple px-4 py-2 text-base sm:text-lg font-semibold text-center flex-1">
+          <div className="card-apple px-2 py-2 sm:px-4 text-sm sm:text-lg font-semibold text-center flex-1 min-w-[180px]">
             Remplacements en attente :{" "}
             <span className="bg-[#e5e5ea] badge-apple">{stats.actives}</span>
           </div>
-          <div className="card-apple px-4 py-2 text-base sm:text-lg font-semibold text-center flex-1">
+          <div className="card-apple px-2 py-2 sm:px-4 text-sm sm:text-lg font-semibold text-center flex-1 min-w-[180px]">
             Remboursés (table mise par ton frère) :{" "}
             <span className="bg-[#e5e5ea] badge-apple">{stats.remboursee}</span>
           </div>
@@ -232,51 +235,62 @@ export default function Home() {
             : "w-full max-w-4xl flex flex-col gap-4 sm:gap-8"
         }
       >
+        {/* BookingForm and BookingList side by side on desktop, stacked on mobile */}
         {(!!session || process.env.NEXT_PUBLIC_DEVELOPMENT) && (
-          <BookingForm
-            date={date}
-            meal={meal}
-            reason={reason}
-            isLoading={isLoading}
-            editingBooking={editingBooking}
-            onDateChange={setDate}
-            onMealChange={setMeal}
-            onReasonChange={setReason}
-            onSubmit={handleSubmit}
-            onCancelEdit={() => {
-              setEditingBooking(null);
-              setDate("");
-              setMeal("lunch");
-              setReason("");
-            }}
-          />
+          <div className="order-2 md:order-1 w-full">
+            <BookingForm
+              date={date}
+              meal={meal}
+              reason={reason}
+              isLoading={isLoading}
+              editingBooking={editingBooking}
+              onDateChange={setDate}
+              onMealChange={setMeal}
+              onReasonChange={setReason}
+              onSubmit={handleSubmit}
+              onCancelEdit={() => {
+                setEditingBooking(null);
+                setDate("");
+                setMeal("lunch");
+                setReason("");
+              }}
+            />
+          </div>
         )}
-        <BookingList
-          bookings={filteredBookings}
-          isLoading={isLoading}
-          NoSession={session ? false : true}
-          onDelete={
-            session || process.env.NEXT_PUBLIC_DEVELOPMENT
-              ? handleDelete
-              : () => {}
+        <div
+          className={
+            !!session || process.env.NEXT_PUBLIC_DEVELOPMENT
+              ? "order-1 md:order-2 w-full"
+              : "w-full"
           }
-          onEdit={
-            session || process.env.NEXT_PUBLIC_DEVELOPMENT
-              ? handleEdit
-              : () => {}
-          }
-          onRefund={
-            session || process.env.NEXT_PUBLIC_DEVELOPMENT
-              ? handleRefund
-              : () => {}
-          }
-          error={error}
-        />
+        >
+          <BookingList
+            bookings={filteredBookings}
+            isLoading={isLoading}
+            NoSession={session ? false : true || process.env.NEXT_PUBLIC_DEVELOPMENT ? false : true}
+            onDelete={
+              session || process.env.NEXT_PUBLIC_DEVELOPMENT
+                ? handleDelete
+                : () => {}
+            }
+            onEdit={
+              session || process.env.NEXT_PUBLIC_DEVELOPMENT
+                ? handleEdit
+                : () => {}
+            }
+            onRefund={
+              session || process.env.NEXT_PUBLIC_DEVELOPMENT
+                ? handleRefund
+                : () => {}
+            }
+            error={error}
+          />
+        </div>
       </main>
-      <footer className="mt-8 sm:mt-12 text-center text-gray-500 text-xs sm:text-sm">
+      <footer className="mt-8 sm:mt-12 text-center text-gray-500 text-xs sm:text-sm w-full px-2">
         <p>
-          &copy; {new Date().getFullYear()} Application QuiMetLaTable. Tous
-          droits réservés.
+          &copy; {new Date().getFullYear()} Application WhereIsJulien. Tous
+          droits réservés. Made with ❤️ by <a className="hover:text-blue-400 cursor-pointer" href="https://github.com/Awakno">Awakno</a>
         </p>
       </footer>
     </div>
