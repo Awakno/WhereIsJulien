@@ -5,7 +5,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import BookingForm from "../components/BookingForm";
 import BookingList from "../components/BookingList";
 import ErrorAlert from "../components/ErrorAlert";
-import { Booking } from "@/types/Booking";
+import { Booking } from "@/types/booking";
 
 export default function Home() {
   const { data: session, status } = useSession();

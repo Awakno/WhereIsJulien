@@ -1,6 +1,6 @@
 import React from "react";
 import BookingListItem from "./BookingListItem";
-import { BookingListProps } from "@/types/Booking";
+import { BookingListProps } from "@/types/booking";
 import LoadingCircle from "./LoadingCircle";
 
 

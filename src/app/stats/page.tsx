@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Booking } from "@/types/Booking";
+import { Booking } from "@/types/booking";
 
 
 ChartJS.register(

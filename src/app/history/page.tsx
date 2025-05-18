@@ -1,7 +1,7 @@
 "use client";
 
 import {DataTable} from "@/components/DataTable";
-import { Booking } from "@/types/Booking";
+import { Booking } from "@/types/booking";
 import { useEffect, useState } from "react";
 import LoadingCircle from "@/components/LoadingCircle";
 

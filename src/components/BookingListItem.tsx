@@ -1,4 +1,4 @@
-import { BookingListItemProps } from "@/types/Booking";
+import { BookingListItemProps } from "@/types/booking";
 import React from "react";
 
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { PRESET_REASONS } from "../config";
 import LoadingCircle from "./LoadingCircle";
-import { BookingFormProps } from "@/types/Booking";
+import { BookingFormProps } from "@/types/booking";
 
 const BookingForm: React.FC<BookingFormProps> = ({
   date,
