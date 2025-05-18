@@ -11,6 +11,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Booking } from "@/types/Booking";
+
 
 ChartJS.register(
   CategoryScale,
@@ -20,12 +22,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-interface Booking {
-  date: string;
-  meal: "lunch" | "dinner";
-  reason: string;
-}
 
 const monthNames = [
   "Janvier",

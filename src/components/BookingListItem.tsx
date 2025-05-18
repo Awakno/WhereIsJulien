@@ -1,20 +1,6 @@
+import { BookingListItemProps } from "@/types/Booking";
 import React from "react";
 
-interface Booking {
-  _id?: string;
-  date: string;
-  meal: "lunch" | "dinner";
-  reason: string;
-  remboursee?: boolean;
-}
-
-interface BookingListItemProps {
-  booking: Booking;
-  onDelete: (date: string, meal: "lunch" | "dinner", reason: string) => void;
-  onEdit: (booking: Booking) => void;
-  onRefund: (date: string, meal: "lunch" | "dinner") => void;
-  isLoading: boolean;
-}
 
 const BookingListItem: React.FC<BookingListItemProps> = ({
   booking,

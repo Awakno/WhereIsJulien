@@ -1,18 +1,7 @@
 import React from "react";
 import { PRESET_REASONS } from "../config";
-
-interface BookingFormProps {
-  date: string;
-  meal: "lunch" | "dinner";
-  reason: string;
-  isLoading: boolean;
-  editingBooking: any;
-  onDateChange: (date: string) => void;
-  onMealChange: (meal: "lunch" | "dinner") => void;
-  onReasonChange: (reason: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  onCancelEdit: () => void;
-}
+import LoadingCircle from "./LoadingCircle";
+import { BookingFormProps } from "@/types/Booking";
 
 const BookingForm: React.FC<BookingFormProps> = ({
   date,
@@ -98,29 +87,10 @@ const BookingForm: React.FC<BookingFormProps> = ({
       </div>
       <button type="submit" disabled={isLoading} className="btn-apple w-full">
         {isLoading ? (
-          <span className="flex items-center justify-center">
-            <svg
-              className="animate-spin h-5 w-5 mr-2 text-gray-500"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              ></path>
-            </svg>
+          <>
+            <LoadingCircle/>
             {editingBooking ? "Mise à jour..." : "Enregistrement..."}
-          </span>
+          </>
         ) : editingBooking ? (
           "Mettre à jour"
         ) : (

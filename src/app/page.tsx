@@ -5,13 +5,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import BookingForm from "../components/BookingForm";
 import BookingList from "../components/BookingList";
 import ErrorAlert from "../components/ErrorAlert";
-interface Booking {
-  _id?: string; // Assuming MongoDB adds an _id
-  date: string;
-  meal: "lunch" | "dinner";
-  reason: string;
-  remboursee?: boolean;
-}
+import { Booking } from "@/types/Booking";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -39,6 +33,18 @@ export default function Home() {
     return a.remboursee ? 1 : -1;
   });
 
+  // if refund date > 7 days, remove from view
+  const today = new Date();
+  const sevenDaysAgo = new Date(today);
+  sevenDaysAgo.setDate(today.getDate() - 7);
+  // Filter out bookings that are refunded and older than 7 days
+  const filteredBookings = bookings.filter((booking) => {
+    const bookingDate = new Date(booking.date);
+    // Keep if not refunded, or if refunded but within last 7 days
+    return !booking.remboursee || bookingDate >= sevenDaysAgo;
+  });
+
+  
   // Fetch bookings
   const fetchBookings = async () => {
     setIsLoading(true);
@@ -187,6 +193,9 @@ export default function Home() {
           <a href="/stats" className="btn-apple text-sm sm:text-base">
             Statistiques de remplacement
           </a>
+          <a href="/history" className="btn-apple text-sm sm:text-base">
+            Historique des remplacements
+          </a>
           {session || process.env.NEXT_PUBLIC_DEVELOPMENT ? (
             <button
               onClick={() => signOut()}
@@ -238,7 +247,7 @@ export default function Home() {
           />
         )}
         <BookingList
-          bookings={bookings}
+          bookings={filteredBookings}
           isLoading={isLoading}
           onDelete={session || process.env.NEXT_PUBLIC_DEVELOPMENT ? handleDelete : () => {}}
           onEdit={session || process.env.NEXT_PUBLIC_DEVELOPMENT ? handleEdit : () => {}}
