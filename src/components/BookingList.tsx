@@ -20,7 +20,7 @@ const BookingList: React.FC<BookingListProps> = ({
       <LoadingCircle text="Chargement..."/>
     )}
     {!isLoading && bookings.length === 0 && !error && (
-      <p className="text-gray-500">Aucun remplacement à afficher.</p>
+      <p className="text-gray-500">Aucun remplacement récent à afficher.</p>
     )}
     {bookings.length > 0 && (
       <ul className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
