@@ -44,7 +44,6 @@ export default function Home() {
     return !booking.remboursee || bookingDate >= sevenDaysAgo;
   });
 
-  
   // Fetch bookings
   const fetchBookings = async () => {
     setIsLoading(true);
@@ -143,7 +142,7 @@ export default function Home() {
   ) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(API_URL, {
         method: "PATCH",
@@ -226,7 +225,13 @@ export default function Home() {
           </div>
         </div>
       )}
-      <main className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+      <main
+        className={
+          session || process.env.NEXT_PUBLIC_DEVELOPMENT
+            ? "w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8"
+            : "w-full max-w-4xl flex flex-col gap-4 sm:gap-8"
+        }
+      >
         {(!!session || process.env.NEXT_PUBLIC_DEVELOPMENT) && (
           <BookingForm
             date={date}
@@ -249,9 +254,22 @@ export default function Home() {
         <BookingList
           bookings={filteredBookings}
           isLoading={isLoading}
-          onDelete={session || process.env.NEXT_PUBLIC_DEVELOPMENT ? handleDelete : () => {}}
-          onEdit={session || process.env.NEXT_PUBLIC_DEVELOPMENT ? handleEdit : () => {}}
-          onRefund={session || process.env.NEXT_PUBLIC_DEVELOPMENT ? handleRefund : () => {}}
+          NoSession={session ? false : true}
+          onDelete={
+            session || process.env.NEXT_PUBLIC_DEVELOPMENT
+              ? handleDelete
+              : () => {}
+          }
+          onEdit={
+            session || process.env.NEXT_PUBLIC_DEVELOPMENT
+              ? handleEdit
+              : () => {}
+          }
+          onRefund={
+            session || process.env.NEXT_PUBLIC_DEVELOPMENT
+              ? handleRefund
+              : () => {}
+          }
           error={error}
         />
       </main>

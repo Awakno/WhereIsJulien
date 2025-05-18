@@ -47,4 +47,5 @@ export interface BookingListProps {
   onEdit: (booking: Booking) => void;
   onRefund: (date: string, meal: "lunch" | "dinner") => void;
   error: string | null;
+  NoSession: boolean;
 }
