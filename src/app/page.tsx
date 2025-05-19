@@ -126,8 +126,8 @@ export default function Home() {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to delete booking");
       }
-      await response.json(); // Consume the response body
-      fetchBookings(); // Refresh bookings list
+      await response.json();
+      fetchBookings();
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -267,7 +267,13 @@ export default function Home() {
           <BookingList
             bookings={filteredBookings}
             isLoading={isLoading}
-            NoSession={session ? false : true || process.env.NEXT_PUBLIC_DEVELOPMENT ? false : true}
+            NoSession={
+              session
+                ? false
+                : true || process.env.NEXT_PUBLIC_DEVELOPMENT
+                ? false
+                : true
+            }
             onDelete={
               session || process.env.NEXT_PUBLIC_DEVELOPMENT
                 ? handleDelete
@@ -290,7 +296,13 @@ export default function Home() {
       <footer className="mt-8 sm:mt-12 text-center text-gray-500 text-xs sm:text-sm w-full px-2">
         <p>
           &copy; {new Date().getFullYear()} Application WhereIsJulien. Tous
-          droits réservés. Made with ❤️ by <a className="hover:text-blue-400 cursor-pointer" href="https://github.com/Awakno">Awakno</a>
+          droits réservés. Made with ❤️ by{" "}
+          <a
+            className="hover:text-blue-400 cursor-pointer"
+            href="https://github.com/Awakno"
+          >
+            Awakno
+          </a>
         </p>
       </footer>
     </div>

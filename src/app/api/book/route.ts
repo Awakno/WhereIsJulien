@@ -16,7 +16,7 @@ const bookingSchema = z.object({
 
 function isAllowedEmail(email: string | null | undefined): boolean {
   if (process.env.NEXT_PUBLIC_DEVELOPMENT) {
-    return true; // Allow all emails in development mode
+    return true;
   }
   if (!email) return false;
   const allowed =
@@ -26,10 +26,12 @@ function isAllowedEmail(email: string | null | undefined): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  
   const session = await getServerSession(authOptions);
-  
-  if (!process.env.NEXT_PUBLIC_DEVELOPMENT && (!session || !isAllowedEmail(session.user?.email))) {
+
+  if (
+    !process.env.NEXT_PUBLIC_DEVELOPMENT &&
+    (!session || !isAllowedEmail(session.user?.email))
+  ) {
     return NextResponse.json(
       { message: "Authentication required or not allowed." },
       { status: 401 }
@@ -61,7 +63,6 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    
     console.error("Error in POST handler:", error);
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -77,9 +78,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  
   const session = await getServerSession(authOptions);
-  if (!process.env.NEXT_PUBLIC_DEVELOPMENT && (!session || !isAllowedEmail(session.user?.email))) {
+  if (
+    !process.env.NEXT_PUBLIC_DEVELOPMENT &&
+    (!session || !isAllowedEmail(session.user?.email))
+  ) {
     return NextResponse.json(
       { message: "Authentication required or not allowed." },
       { status: 401 }
@@ -106,7 +109,6 @@ export async function PATCH(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    
     return NextResponse.json(
       { message: "Erreur lors du remboursement." },
       { status: 500 }
@@ -115,7 +117,6 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  
   try {
     const db = await dbConnect();
 
@@ -175,7 +176,6 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }
@@ -184,9 +184,11 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  
   const session = await getServerSession(authOptions);
-  if (!process.env.NEXT_PUBLIC_DEVELOPMENT && (!session || !isAllowedEmail(session.user?.email))) {
+  if (
+    !process.env.NEXT_PUBLIC_DEVELOPMENT &&
+    (!session || !isAllowedEmail(session.user?.email))
+  ) {
     return NextResponse.json(
       { message: "Authentication required or not allowed." },
       { status: 401 }
@@ -214,7 +216,6 @@ export async function DELETE(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    
     console.error("Error in DELETE handler:", error);
     if (error instanceof z.ZodError) {
       return NextResponse.json(

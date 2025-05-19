@@ -245,8 +245,6 @@ function DevBubble() {
     } catch {}
   }, [open, pos, size, logs, pathname]);
 
-  
-
   if (!isDev) return null;
   return (
     <>

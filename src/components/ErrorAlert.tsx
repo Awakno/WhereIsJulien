@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const ErrorAlert: React.FC<ErrorAlertProps> = ({ error }) => {
   if (!error) return null;
   return (

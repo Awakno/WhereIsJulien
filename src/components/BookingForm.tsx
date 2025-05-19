@@ -88,7 +88,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <button type="submit" disabled={isLoading} className="btn-apple w-full">
         {isLoading ? (
           <>
-            <LoadingCircle/>
+            <LoadingCircle />
             {editingBooking ? "Mise à jour..." : "Enregistrement..."}
           </>
         ) : editingBooking ? (

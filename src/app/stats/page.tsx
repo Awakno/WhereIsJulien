@@ -14,7 +14,6 @@ import {
 import { Booking } from "@/types/booking";
 import LoadingCircle from "@/components/LoadingCircle";
 
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -93,7 +92,7 @@ export default function StatsPage() {
         </a>
       </header>
       {loading ? (
-        <LoadingCircle text="Chargement des données"/>
+        <LoadingCircle text="Chargement des données" />
       ) : error ? (
         <div className="bg-red-800 border border-red-600 text-white px-4 py-3 rounded-lg mb-6 max-w-md">
           {error}
