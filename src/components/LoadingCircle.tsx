@@ -8,7 +8,7 @@ export default function LoadingCircle({
   text?: string | null;
 }) {
   return (
-    <div className="flex justify-center items-center py-8">
+    <div className="flex justify-center items-center">
       <svg
         className="animate-spin h-6 w-6 text-gray-500"
         xmlns="http://www.w3.org/2000/svg"

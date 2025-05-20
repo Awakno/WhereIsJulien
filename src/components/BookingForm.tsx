@@ -15,7 +15,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
   onSubmit,
   onCancelEdit,
 }) => (
-  <section className="card-apple">
+  <section className="card-apple text-white">
     <h2 className="text-2xl font-semibold mb-6" style={{ color: "#fffff" }}>
       Remplacement à déclarer
     </h2>
@@ -23,7 +23,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <div>
         <label
           htmlFor="date"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium mb-1"
         >
           Date
         </label>
@@ -39,7 +39,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <div>
         <label
           htmlFor="meal"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium mb-1"
         >
           Repas
         </label>
@@ -57,7 +57,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <div>
         <label
           htmlFor="reason"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium mb-1"
         >
           Motif ou commentaire
         </label>
@@ -88,8 +88,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <button type="submit" disabled={isLoading} className="btn-apple w-full">
         {isLoading ? (
           <>
-            <LoadingCircle />
-            {editingBooking ? "Mise à jour..." : "Enregistrement..."}
+            <LoadingCircle text={editingBooking ? "Mise à jour..." : "Enregistrement..."} />
+            
           </>
         ) : editingBooking ? (
           "Mettre à jour"
