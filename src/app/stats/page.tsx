@@ -134,11 +134,11 @@ export default function StatsPage() {
             />
           </div>
           {stats && (
-            <div className="w-full max-w-2xl bg-gray-900 rounded-xl shadow-xl p-6 mb-8">
+            <div className="w-full max-w-6xl bg-gray-900 rounded-xl shadow-xl p-6 mb-8">
               <h2 className="text-2xl font-bold mb-4 text-teal-300">
                 Statistiques globales
               </h2>
-              <div className="flex flex-wrap gap-4 mb-4">
+              <div className="flex flex-wrap gap-4 mb-6">
                 <div className="flex-1 min-w-[180px] bg-gray-700 rounded-lg px-4 py-2 text-lg font-semibold text-white text-center">
                   Actives :{" "}
                   <span className="text-teal-300">{stats.actives}</span>
@@ -155,31 +155,110 @@ export default function StatsPage() {
                   <span className="text-blue-300">{stats.refundToday}</span>
                 </div>
               </div>
+
+              {/* Statistiques par repas */}
+              <h3 className="text-xl font-bold mt-6 mb-3 text-teal-200">
+                Par repas
+              </h3>
+              <div className="flex flex-wrap gap-4 mb-6">
+                <div className="flex-1 min-w-[200px] bg-orange-900 rounded-lg px-4 py-2 text-center">
+                  <h4 className="font-bold text-orange-200">Déjeuners</h4>
+                  <div className="text-sm">
+                    <span className="text-orange-300">
+                      Total: {stats.mealStats?.lunch?.total || 0}
+                    </span>{" "}
+                    |{" "}
+                    <span className="text-green-300">
+                      Remboursés: {stats.mealStats?.lunch?.remboursee || 0}
+                    </span>{" "}
+                    |{" "}
+                    <span className="text-red-300">
+                      Actifs: {stats.mealStats?.lunch?.actives || 0}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex-1 min-w-[200px] bg-indigo-900 rounded-lg px-4 py-2 text-center">
+                  <h4 className="font-bold text-indigo-200">Dîners</h4>
+                  <div className="text-sm">
+                    <span className="text-indigo-300">
+                      Total: {stats.mealStats?.dinner?.total || 0}
+                    </span>{" "}
+                    |{" "}
+                    <span className="text-green-300">
+                      Remboursés: {stats.mealStats?.dinner?.remboursee || 0}
+                    </span>{" "}
+                    |{" "}
+                    <span className="text-red-300">
+                      Actifs: {stats.mealStats?.dinner?.actives || 0}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Statistiques par personne */}
+              <h3 className="text-xl font-bold mt-6 mb-3 text-teal-200">
+                Par personne qui doit rembourser
+              </h3>
+              <div className="overflow-x-auto mb-6">
+                <table className="min-w-full text-sm text-left bg-gray-800 rounded-lg">
+                  <thead>
+                    <tr className="bg-gray-700">
+                      <th className="px-4 py-2 text-teal-200">Personne</th>
+                      <th className="px-4 py-2 text-red-300">Actives</th>
+                      <th className="px-4 py-2 text-green-300">Remboursées</th>
+                      <th className="px-4 py-2 text-purple-300">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(stats.reimbursedByStats || {}).map(
+                      ([person, s]: any) => (
+                        <tr key={person} className="border-t border-gray-600">
+                          <td className="px-4 py-2 font-medium text-white">
+                            {person}
+                          </td>
+                          <td className="px-4 py-2 text-red-300">
+                            {s.actives}
+                          </td>
+                          <td className="px-4 py-2 text-green-300">
+                            {s.remboursee}
+                          </td>
+                          <td className="px-4 py-2 text-purple-300">
+                            {s.total}
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
               <h3 className="text-xl font-bold mt-6 mb-2 text-teal-200">
                 Par raison
               </h3>
               <div className="overflow-x-auto">
-                <table className="min-w-full text-sm text-left">
+                <table className="min-w-full text-sm text-left bg-gray-800 rounded-lg">
                   <thead>
-                    <tr>
-                      <th className="px-2 py-1">Raison</th>
-                      <th className="px-2 py-1">Actives</th>
-                      <th className="px-2 py-1">Remboursées</th>
-                      <th className="px-2 py-1">Total</th>
+                    <tr className="bg-gray-700">
+                      <th className="px-4 py-2 text-teal-200">Raison</th>
+                      <th className="px-4 py-2 text-red-300">Actives</th>
+                      <th className="px-4 py-2 text-green-300">Remboursées</th>
+                      <th className="px-4 py-2 text-purple-300">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {Object.entries(stats.reasonStats || {}).map(
                       ([reason, s]: any) => (
-                        <tr key={reason}>
-                          <td className="px-2 py-1 font-medium">{reason}</td>
-                          <td className="px-2 py-1 text-teal-300">
+                        <tr key={reason} className="border-t border-gray-600">
+                          <td className="px-4 py-2 font-medium text-white">
+                            {reason}
+                          </td>
+                          <td className="px-4 py-2 text-red-300">
                             {s.actives}
                           </td>
-                          <td className="px-2 py-1 text-green-300">
+                          <td className="px-4 py-2 text-green-300">
                             {s.remboursee}
                           </td>
-                          <td className="px-2 py-1 text-purple-300">
+                          <td className="px-4 py-2 text-purple-300">
                             {s.total}
                           </td>
                         </tr>

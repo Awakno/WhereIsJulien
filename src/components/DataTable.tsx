@@ -32,6 +32,12 @@ export const DataTable: React.FC<DataTableProps> = ({ bookingsData }) => {
               scope="col"
               className="px-2 xs:px-4 sm:px-6 py-2 sm:py-3 text-left font-medium text-white uppercase tracking-wider"
             >
+              Qui rembourse
+            </th>
+            <th
+              scope="col"
+              className="px-2 xs:px-4 sm:px-6 py-2 sm:py-3 text-left font-medium text-white uppercase tracking-wider"
+            >
               Remboursé
             </th>
           </tr>
@@ -47,6 +53,9 @@ export const DataTable: React.FC<DataTableProps> = ({ bookingsData }) => {
               </td>
               <td className="px-2 xs:px-4 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
                 {booking.reason}
+              </td>
+              <td className="px-2 xs:px-4 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
+                {booking.reimbursedBy || "Non spécifié"}
               </td>
               <td className="px-2 xs:px-4 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
                 {booking.remboursee === true ? "Oui" : "Non"}

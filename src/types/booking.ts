@@ -4,6 +4,7 @@ export interface Booking {
   meal: "lunch" | "dinner";
   reason: string;
   remboursee?: boolean;
+  reimbursedBy?: string; // Qui doit rembourser
 }
 
 export interface BookingsProps {
@@ -23,11 +24,13 @@ export interface BookingFormProps {
   date: string;
   meal: "lunch" | "dinner";
   reason: string;
+  reimbursedBy: string;
   isLoading: boolean;
   editingBooking: any;
   onDateChange: (date: string) => void;
   onMealChange: (meal: "lunch" | "dinner") => void;
   onReasonChange: (reason: string) => void;
+  onReimbursedByChange: (person: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   onCancelEdit: () => void;
 }

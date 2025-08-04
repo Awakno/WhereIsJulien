@@ -13,6 +13,7 @@ export default function Home() {
   const [date, setDate] = useState("");
   const [meal, setMeal] = useState<"lunch" | "dinner">("lunch");
   const [reason, setReason] = useState("");
+  const [reimbursedBy, setReimbursedBy] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
@@ -80,7 +81,7 @@ export default function Home() {
     setIsLoading(true);
     setError(null);
 
-    const bookingData = { date, meal, reason };
+    const bookingData = { date, meal, reason, reimbursedBy };
 
     try {
       const response = await fetch(API_URL, {
@@ -97,6 +98,7 @@ export default function Home() {
       setDate("");
       setMeal("lunch");
       setReason("");
+      setReimbursedBy("");
       setEditingBooking(null); // Reset editing state
     } catch (err: any) {
       setError(err.message);
@@ -168,6 +170,7 @@ export default function Home() {
     setDate(booking.date.split("T")[0]); // Format date for input type="date"
     setMeal(booking.meal);
     setReason(booking.reason);
+    setReimbursedBy(booking.reimbursedBy || "");
   };
 
   return (
@@ -207,10 +210,10 @@ export default function Home() {
             </button>
           ) : (
             <button
-              onClick={() => signIn("github")}
+              onClick={() => signIn("google")}
               className="btn-apple text-xs xs:text-sm sm:text-base"
             >
-              Se connecter avec GitHub
+              Se connecter avec Google
             </button>
           )}
         </div>
@@ -242,17 +245,20 @@ export default function Home() {
               date={date}
               meal={meal}
               reason={reason}
+              reimbursedBy={reimbursedBy}
               isLoading={isLoading}
               editingBooking={editingBooking}
               onDateChange={setDate}
               onMealChange={setMeal}
               onReasonChange={setReason}
+              onReimbursedByChange={setReimbursedBy}
               onSubmit={handleSubmit}
               onCancelEdit={() => {
                 setEditingBooking(null);
                 setDate("");
                 setMeal("lunch");
                 setReason("");
+                setReimbursedBy("");
               }}
             />
           </div>

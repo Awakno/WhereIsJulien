@@ -1,24 +1,30 @@
-import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 import type { Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
-      profile(profile) {
-        return {
-          id: String(profile.id),
-          name: profile.name || profile.login,
-          email: profile.email,
-          image: profile.avatar_url,
-        };
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
       },
     }),
   ],
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      const allowedEmails = process.env.ALLOWED_EMAILS?.split(",") || [];
+      if (allowedEmails.includes(user.email || "")) {
+        return true;
+      }
+      return false; // Bloque l'accès si l'email n'est pas autorisé
+    },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session?.user) {
         session.user.email = token.email as string | undefined;

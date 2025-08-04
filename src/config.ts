@@ -4,3 +4,6 @@ export const PRESET_REASONS = [
   "Travail",
   "Sortie entre amis",
 ];
+
+// Liste des personnes qui peuvent rembourser
+export const PEOPLE_LIST = ["Julien", "Alex", "Maman", "Papa"];

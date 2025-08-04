@@ -1,5 +1,5 @@
 import React from "react";
-import { PRESET_REASONS } from "../config";
+import { PRESET_REASONS, PEOPLE_LIST } from "../config";
 import LoadingCircle from "./LoadingCircle";
 import { BookingFormProps } from "@/types/booking";
 
@@ -7,11 +7,13 @@ const BookingForm: React.FC<BookingFormProps> = ({
   date,
   meal,
   reason,
+  reimbursedBy,
   isLoading,
   editingBooking,
   onDateChange,
   onMealChange,
   onReasonChange,
+  onReimbursedByChange,
   onSubmit,
   onCancelEdit,
 }) => (
@@ -21,10 +23,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
     </h2>
     <form onSubmit={onSubmit} className="space-y-6">
       <div>
-        <label
-          htmlFor="date"
-          className="block text-sm font-medium mb-1"
-        >
+        <label htmlFor="date" className="block text-sm font-medium mb-1">
           Date
         </label>
         <input
@@ -37,10 +36,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
         />
       </div>
       <div>
-        <label
-          htmlFor="meal"
-          className="block text-sm font-medium mb-1"
-        >
+        <label htmlFor="meal" className="block text-sm font-medium mb-1">
           Repas
         </label>
         <select
@@ -55,10 +51,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
         </select>
       </div>
       <div>
-        <label
-          htmlFor="reason"
-          className="block text-sm font-medium mb-1"
-        >
+        <label htmlFor="reason" className="block text-sm font-medium mb-1">
           Motif ou commentaire
         </label>
         <div className="flex flex-wrap gap-2 mb-2">
@@ -85,11 +78,34 @@ const BookingForm: React.FC<BookingFormProps> = ({
           placeholder="Ex: Je dépanne pour cause d'examens, etc."
         />
       </div>
+      <div>
+        <label
+          htmlFor="reimbursedBy"
+          className="block text-sm font-medium mb-1"
+        >
+          Qui doit rembourser ?
+        </label>
+        <select
+          id="reimbursedBy"
+          value={reimbursedBy}
+          onChange={(e) => onReimbursedByChange(e.target.value)}
+          required
+          className="input-apple w-full"
+        >
+          <option value="">Sélectionner une personne</option>
+          {PEOPLE_LIST.map((person) => (
+            <option key={person} value={person}>
+              {person}
+            </option>
+          ))}
+        </select>
+      </div>
       <button type="submit" disabled={isLoading} className="btn-apple w-full">
         {isLoading ? (
           <>
-            <LoadingCircle text={editingBooking ? "Mise à jour..." : "Enregistrement..."} />
-            
+            <LoadingCircle
+              text={editingBooking ? "Mise à jour..." : "Enregistrement..."}
+            />
           </>
         ) : editingBooking ? (
           "Mettre à jour"

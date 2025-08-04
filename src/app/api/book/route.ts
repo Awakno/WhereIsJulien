@@ -2,7 +2,13 @@ import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { z } from "zod";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../lib/authOptions";
+import { authOptions } from "@/lib/authOptions";
+
+function isAllowedEmail(email?: string | null): boolean {
+  if (!email) return false;
+  const allowedEmails = process.env.ALLOWED_EMAILS?.split(",") || [];
+  return allowedEmails.includes(email);
+}
 
 // Define a schema for input validation
 const bookingSchema = z.object({
@@ -11,23 +17,12 @@ const bookingSchema = z.object({
     errorMap: () => ({ message: "Meal must be either lunch or dinner" }),
   }),
   reason: z.string().nonempty("Reason is required").optional(),
+  reimbursedBy: z.string().optional(), // Qui doit rembourser
   remboursee: z.boolean().optional(), // Ajout du champ remboursé
 });
 
-function isAllowedEmail(email: string | null | undefined): boolean {
-  if (process.env.NEXT_PUBLIC_DEVELOPMENT) {
-    return true;
-  }
-  if (!email) return false;
-  const allowed =
-    process.env.ALLOWED_EMAILS?.split(",").map((e) => e.trim().toLowerCase()) ||
-    [];
-  return allowed.includes(email.toLowerCase());
-}
-
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-
   if (
     !process.env.NEXT_PUBLIC_DEVELOPMENT &&
     (!session || !isAllowedEmail(session.user?.email))
@@ -40,7 +35,8 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { date, reason, meal, remboursee } = bookingSchema.parse(body); // Validate input
+    const { date, reason, meal, reimbursedBy, remboursee } =
+      bookingSchema.parse(body); // Validate input
 
     const db = await dbConnect();
     const collection = db.collection("bookings");
@@ -49,7 +45,7 @@ export async function POST(req: NextRequest) {
     if (bookingsResult) {
       await collection.updateOne(
         { date, meal }, // Use both date and meal as filter
-        { $set: { reason, meal, remboursee } }
+        { $set: { reason, meal, reimbursedBy, remboursee } }
       );
       return NextResponse.json(
         { message: "Booking updated successfully" },
@@ -57,7 +53,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await collection.insertOne({ date, reason, meal, remboursee }); // Use insertOne for new bookings
+    await collection.insertOne({
+      date,
+      reason,
+      meal,
+      reimbursedBy,
+      remboursee,
+    }); // Use insertOne for new bookings
     return NextResponse.json(
       { message: "Booking created successfully" },
       { status: 200 }
@@ -119,13 +121,16 @@ export async function PATCH(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const db = await dbConnect();
-
     const collection = db.collection("bookings");
+
+    // Récupérer toutes les réservations
     const allBookings = await collection.find({}).toArray();
+
+    // Séparer les réservations actives et remboursées
     const bookings = allBookings.filter((b: any) => b.remboursee !== true);
     const rembourses = allBookings.filter((b: any) => b.remboursee === true);
 
-    // Statistiques par raison
+    // Statistiques pour les raisons
     const reasonStats: Record<
       string,
       { actives: number; remboursee: number; total: number }
@@ -133,8 +138,38 @@ export async function GET(req: NextRequest) {
     for (const reason of (await import("@/config")).PRESET_REASONS) {
       reasonStats[reason] = { actives: 0, remboursee: 0, total: 0 };
     }
+
+    // Statistiques par personne qui doit rembourser
+    const reimbursedByStats: Record<
+      string,
+      { actives: number; remboursee: number; total: number }
+    > = {};
+    for (const person of (await import("@/config")).PEOPLE_LIST) {
+      reimbursedByStats[person] = { actives: 0, remboursee: 0, total: 0 };
+    }
+
+    // Statistiques par repas
+    const mealStats = {
+      lunch: { actives: 0, remboursee: 0, total: 0 },
+      dinner: { actives: 0, remboursee: 0, total: 0 },
+    };
+
+    // Statistiques par mois
+    const monthlyStats: Record<
+      string,
+      { actives: number; remboursee: number; total: number }
+    > = {};
+
     allBookings.forEach((b: any) => {
       const r = b.reason || "Autre";
+      const person = b.reimbursedBy || "Non spécifié";
+      const meal = b.meal || "lunch";
+      const date = new Date(b.date);
+      const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}`;
+
+      // Stats par raison
       if (!reasonStats[r])
         reasonStats[r] = { actives: 0, remboursee: 0, total: 0 };
       if (b.remboursee === true) {
@@ -143,6 +178,34 @@ export async function GET(req: NextRequest) {
         reasonStats[r].actives++;
       }
       reasonStats[r].total++;
+
+      // Stats par personne
+      if (!reimbursedByStats[person])
+        reimbursedByStats[person] = { actives: 0, remboursee: 0, total: 0 };
+      if (b.remboursee === true) {
+        reimbursedByStats[person].remboursee++;
+      } else {
+        reimbursedByStats[person].actives++;
+      }
+      reimbursedByStats[person].total++;
+
+      // Stats par repas
+      if (b.remboursee === true) {
+        mealStats[meal as keyof typeof mealStats].remboursee++;
+      } else {
+        mealStats[meal as keyof typeof mealStats].actives++;
+      }
+      mealStats[meal as keyof typeof mealStats].total++;
+
+      // Stats par mois
+      if (!monthlyStats[monthKey])
+        monthlyStats[monthKey] = { actives: 0, remboursee: 0, total: 0 };
+      if (b.remboursee === true) {
+        monthlyStats[monthKey].remboursee++;
+      } else {
+        monthlyStats[monthKey].actives++;
+      }
+      monthlyStats[monthKey].total++;
     });
 
     // Statistiques pour les réservations remboursées aujourd'hui
@@ -171,6 +234,9 @@ export async function GET(req: NextRequest) {
         stats: {
           ...allStats,
           reasonStats,
+          reimbursedByStats,
+          mealStats,
+          monthlyStats,
         },
       },
       { status: 200 }
